@@ -83,7 +83,7 @@ function getMethods() {
 }
 //----------------------- PrayTimes Class ------------------------
 
-function PrayTimes(method) {
+export function PrayTimes(method) {
 
 
 	//------------------------ Constants --------------------------

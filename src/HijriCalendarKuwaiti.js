@@ -4,7 +4,7 @@ function gmod(n, m) {
 	return ((n % m) + m) % m;
 }
 
-function KuwaitiCalendar(adjust) {
+export function KuwaitiCalendar(adjust) {
 	var today = new Date();
 	if (adjust) {
 		adjustmili = 1000 * 60 * 60 * 24 * adjust;
