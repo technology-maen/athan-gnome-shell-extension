@@ -18,7 +18,6 @@ export default class ClipboardIndicatorPreferences extends ExtensionPreferences 
     }
 }
 
-
 class Settings {
     constructor(schema) {
         this.schema = schema;
@@ -31,6 +30,7 @@ class Settings {
         });
         this.field_latitude = new Adw.SpinRow({
             title: _("Latitude"),
+            digits: 4,
             adjustment: new Gtk.Adjustment({
                 lower: -90.0000,
                 upper: 90.0000,
@@ -39,6 +39,7 @@ class Settings {
         });
         this.field_longitude = new Adw.SpinRow({
             title: _("Longitude"),
+            digits: 4,
             adjustment: new Gtk.Adjustment({
                 lower: -180.0000,
                 upper: 180.0000,
@@ -82,8 +83,6 @@ class Settings {
         this.displayGroup = new Adw.PreferencesGroup({ title: _('Display') });
         this.displayGroup.add(this.field_time_format_12_toggle);
         this.displayGroup.add(this.field_which_times_mode);
-        
-        
 
         this.schema.bind('auto-location',
             this.field_auto_location_toggle,
@@ -131,6 +130,16 @@ class Settings {
             Gio.SettingsBindFlags.DEFAULT
         );
 
+        // enable/disable latitude and longitude fields
+        let autoLocationActive = this.field_auto_location_toggle.active;
+        this.field_latitude.sensitive = !autoLocationActive;
+        this.field_longitude.sensitive = !autoLocationActive;
+
+        this.field_auto_location_toggle.connect('notify::active', () => {
+            autoLocationActive = this.field_auto_location_toggle.active;
+            this.field_latitude.sensitive = !autoLocationActive;
+            this.field_longitude.sensitive = !autoLocationActive;
+        });
     }
     
     #calcMethodOptions() {
