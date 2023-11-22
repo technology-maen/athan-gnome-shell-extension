@@ -11,7 +11,6 @@ import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 import * as PermissionStore from 'resource:///org/gnome/shell/misc/permissionStore.js';
 import * as PrayTimes from './PrayTimes.js';
-import * as Convenience from './convenience.js';
 import * as HijriCalendarKuwaiti from './HijriCalendarKuwaiti.js';
 
 const Azan = GObject.registerClass(
@@ -37,7 +36,7 @@ const Azan = GObject.registerClass(
             this._opt_concise_list = null;
             this._opt_hijriDateAdjustment = null;
 
-            this._settings = Convenience.getSettings('org.gnome.shell.extensions.azan');
+            this._settings = this.extensionObject.getSettings('org.gnome.shell.extensions.azan');
             this._bindSettings();
             this._loadSettings();
 
@@ -73,7 +72,12 @@ const Azan = GObject.registerClass(
                 isha: 1,
                 midnight: 0
             };
-
+                
+            this._calcMethodsArr = ["MUI", "MWL", "ISNA", "Egypt", "Makkah", "Karachi", "Tehran"];
+            this._madhabArr = ["Standard", "Hanafi"]
+            this._timezoneArr = Array.from({ length: 27 }, (_, index) => (index - 12).toString());
+            this._timezoneArr.unshift("auto");
+            
             this._prayItems = {};
 
             this._dateMenuItem = new PopupMenu.PopupMenuItem(_("TODO"), {
@@ -210,16 +214,16 @@ const Azan = GObject.registerClass(
         }
 
         _loadSettings() {
-            this._opt_calculationMethod = this._settings.get_string('calculation-method');
-            this._opt_madhab = this._settings.get_string('madhab');
+            this._opt_calculationMethod = this._settings.get_int('calculation-method');
+            this._opt_madhab = this._settings.get_int('madhab');
             this._opt_autoLocation = this._settings.get_boolean('auto-location');
             this._updateAutoLocation();
             this._opt_latitude = this._settings.get_double('latitude');
             this._opt_longitude = this._settings.get_double('longitude');
             this._opt_timeformat12 = this._settings.get_boolean('time-format-12');
-            this._opt_timezone = this._settings.get_string('timezone');
-            this._opt_concise_list = this._settings.get_string('concise-list');
-            this._opt_hijriDateAdjustment = this._settings.get_double('hijri-date-adjustment');
+            this._opt_timezone = this._settings.get_int('timezone');
+            this._opt_concise_list = this._settings.get_int('concise-list');
+            this._opt_hijriDateAdjustment = this._settings.get_int('hijri-date-adjustment');
         }
 
         _bindSettings() {
@@ -230,13 +234,13 @@ const Azan = GObject.registerClass(
             });
 
             this._settings.connect('changed::' + 'calculation-method', (settings, key) => {
-                this._opt_calculationMethod = settings.get_string(key);
-
+                this._opt_calculationMethod = settings.get_int(key);
+                
                 this._updateLabel();
             });
 
             this._settings.connect('changed::' + 'madhab', (settings, key) => {
-                this._opt_madhab = settings.get_string(key);
+                this._opt_madhab = settings.get_int(key);
 
                 this._updateLabel();
             });
@@ -256,19 +260,19 @@ const Azan = GObject.registerClass(
                 this._updateLabel();
             });
             this._settings.connect('changed::' + 'timezone', (settings, key) => {
-                this._opt_timezone = settings.get_string(key);
+                this._opt_timezone = settings.get_int(key);
 
                 this._updateLabel();
             });
 
             this._settings.connect('changed::' + 'concise-list', (settings, key) => {
-                this._opt_concise_list = settings.get_string(key);
+                this._opt_concise_list = settings.get_int(key);
                 this._updateLabel();
                 this._updatePrayerVisibility();
             });
 
             this._settings.connect('changed::' + 'hijri-date-adjustment', (settings, key) => {
-                this._opt_hijriDateAdjustment = settings.get_double(key);
+                this._opt_hijriDateAdjustment = settings.get_int(key);
 
                 this._updateLabel();
             });
@@ -286,12 +290,15 @@ const Azan = GObject.registerClass(
 
         _updateLabelPeriodic() {
             let currentSeconds = new Date().getSeconds();
+            this._updateLabel();
+            if (this._periodicTimeoutId) {
+                GLib.source_remove(this._periodicTimeoutId);
+            }
             if (currentSeconds === 0) {
                 this._periodicTimeoutId = GLib.timeout_add_seconds(
                     GLib.PRIORITY_DEFAULT,
                     60,
                     () => {
-                        this._updateLabelPeriodic.bind(this);
                         this._updateLabel();
                         return true;
                     }
@@ -301,8 +308,7 @@ const Azan = GObject.registerClass(
                     GLib.PRIORITY_DEFAULT,
                     60 - currentSeconds,
                     () => {
-                        this._updateLabelPeriodic.bind(this);
-                        this._updateLabel();
+                        this._updateLabelPeriodic();
                         return true;
                     }
                 );
@@ -314,10 +320,10 @@ const Azan = GObject.registerClass(
             let dateFormattedFull = displayDate.format(this._dateFormatFull);
 
             let myLocation = [this._opt_latitude, this._opt_longitude];
-            let myTimezone = this._opt_timezone;
-            this._prayTimes.setMethod(this._opt_calculationMethod);
-            this._prayTimes.adjust({ asr: this._opt_madhab });
-
+            let myTimezone = this._timezoneArr[this._opt_timezone];
+            this._prayTimes.setMethod(this._calcMethodsArr[this._opt_calculationMethod]);
+            this._prayTimes.adjust({ asr: this._madhabArr[this._opt_madhab] });
+            
             let currentDate = new Date();
 
             let currentSeconds = this._calculateSecondsFromDate(currentDate);

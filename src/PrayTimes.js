@@ -56,7 +56,7 @@ http://praytimes.org/calculation
 
 */
 
-function getMethods() {
+export function getMethods() {
   return {
         MUI: {
             name: 'Majelis Ulama Indonesia',

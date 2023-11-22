@@ -7,8 +7,8 @@ function gmod(n, m) {
 export function KuwaitiCalendar(adjust) {
 	var today = new Date();
 	if (adjust) {
-		adjustmili = 1000 * 60 * 60 * 24 * adjust;
-		todaymili = today.getTime() + adjustmili;
+		let adjustmili = 1000 * 60 * 60 * 24 * adjust;
+		let todaymili = today.getTime() + adjustmili;
 		today = new Date(todaymili);
 	}
 	let day = today.getDate();
