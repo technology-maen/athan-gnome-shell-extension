@@ -54,5 +54,31 @@
       <default>1</default>
       <summary>Which times to show</summary>
     </key>
+
+    <key type="b" name="iqamah">
+        <default>true</default>
+        <description>Display the current prayer time until the Iqamah</description>
+    </key>
+
+    <key type="i" name="iqamah-fajr">
+      <default>35</default>
+    </key>
+
+    <key type="i" name="iqamah-dhuhr">
+      <default>20</default>
+    </key>
+
+    <key type="i" name="iqamah-asr">
+      <default>20</default>
+    </key>
+
+    <key type="i" name="iqamah-maghrib">
+      <default>15</default>
+    </key>
+
+    <key type="i" name="iqamah-isha">
+      <default>20</default>
+    </key>
+
   </schema>
 </schemalist>
