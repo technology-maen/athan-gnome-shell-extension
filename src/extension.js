@@ -291,32 +291,32 @@ const Azan = GObject.registerClass(
 
             this._settings.connect('changed::' + 'iqamah', (settings, key) => {
                 this._opt_iqamah = settings.get_boolean(key);
-                Main.notify(_("Iqamah opt: " + this._opt_iqamah));
+
                 this._updateLabel();
             });
             this._settings.connect('changed::' + 'iqamah-fajr', (settings, key) => {
                 this._opt_iqamah_fajr = settings.get_int(key);
-                Main.notify(_("Iqamah fajr: " + this._opt_iqamah_fajr));
+                
                 this._updateLabel();
             });
             this._settings.connect('changed::' + 'iqamah-dhuhr', (settings, key) => {
                 this._opt_iqamah_dhuhr = settings.get_int(key);
-                Main.notify(_("Iqamah dhuhr: " + this._opt_iqamah_dhuhr));
+                
                 this._updateLabel();
             });
             this._settings.connect('changed::' + 'iqamah-asr', (settings, key) => {
                 this._opt_iqamah_asr = settings.get_int(key);
-                Main.notify(_("Iqamah asr: " + this._opt_iqamah_asr));
+                
                 this._updateLabel();
             });
             this._settings.connect('changed::' + 'iqamah-maghrib', (settings, key) => {
                 this._opt_iqamah_maghrib = settings.get_int(key);
-                Main.notify(_("Iqamah maghrib: " + this._opt_iqamah_maghrib));
+                
                 this._updateLabel();
             });
             this._settings.connect('changed::' + 'iqamah-isha', (settings, key) => {
                 this._opt_iqamah_isha = settings.get_int(key);
-                Main.notify(_("Iqamah isha: " + this._opt_iqamah_isha));
+                
                 this._updateLabel();
             });
         }

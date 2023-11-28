@@ -1,7 +1,5 @@
 import Adw from 'gi://Adw';
-import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk';
-import Gdk from 'gi://Gdk';
 import Gio from 'gi://Gio';
 import { ExtensionPreferences, gettext as _ } from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 import * as PrayTimes from './PrayTimes.js';
@@ -14,6 +12,7 @@ export default class ClipboardIndicatorPreferences extends ExtensionPreferences 
         page.add(settingsUI.locationGroup);
         page.add(settingsUI.calculationGroup);
         page.add(settingsUI.displayGroup);
+        page.add(settingsUI.iqamahGroup);
         window.add(page);
     }
 }
@@ -22,6 +21,17 @@ class Settings {
     constructor(schema) {
         this.schema = schema;
 
+        this.#initFields();
+        this.#createView();
+        this.#bindSettings();
+
+        // enable/disable latitude and longitude fields
+        this.#updateLocationFields();
+        // enable/disable iqamah fields
+        this.#updateIqamahFields();
+    }
+
+    #initFields() {
         this.field_auto_location_toggle = new Adw.SwitchRow({
             title: _("Automatic location")
         });
@@ -30,7 +40,7 @@ class Settings {
         });
         this.field_iqamah_toggle = new Adw.SwitchRow({
             title: _("Iqamah"),
-            subtitle: _("Display the current prayer time until the Iqamah")
+            subtitle: _("Keep the current prayer time until the Iqamah")
         });
 
         this.field_latitude = new Adw.SpinRow({
@@ -116,7 +126,9 @@ class Settings {
             title: _("Which times?"),
             model: this.#whichTimesOptions()
         });
+    }
 
+    #createView() {
         this.calculationGroup = new Adw.PreferencesGroup({ title: _('Calculation') });
         this.calculationGroup.add(this.field_hijri_date_adjustment);
         this.calculationGroup.add(this.field_calc_method_mode);
@@ -131,44 +143,14 @@ class Settings {
         this.displayGroup = new Adw.PreferencesGroup({ title: _('Display') });
         this.displayGroup.add(this.field_time_format_12_toggle);
         this.displayGroup.add(this.field_which_times_mode);
-        this.displayGroup.add(this.field_iqamah_toggle);
-        this.displayGroup.add(this.field_iqamah_fajr_adjustment);
-        this.displayGroup.add(this.field_iqamah_dhuhr_adjustment);
-        this.displayGroup.add(this.field_iqamah_asr_adjustment);
-        this.displayGroup.add(this.field_iqamah_maghrib_adjustment);
-        this.displayGroup.add(this.field_iqamah_isha_adjustment);
-
-
-        this.#bindSettings();
-
-
-        // enable/disable latitude and longitude fields
-        let autoLocationActive = this.field_auto_location_toggle.active;
-        this.field_latitude.visible = !autoLocationActive;
-        this.field_longitude.visible = !autoLocationActive;
-
-        this.field_auto_location_toggle.connect('notify::active', () => {
-            autoLocationActive = this.field_auto_location_toggle.active;
-            this.field_latitude.visible = !autoLocationActive;
-            this.field_longitude.visible = !autoLocationActive;
-        });
-
-        // enable/disable iqamah fields
-        let iqamahActive = this.field_iqamah_toggle.active;
-        this.field_iqamah_fajr_adjustment.visible = iqamahActive;
-        this.field_iqamah_dhuhr_adjustment.visible = iqamahActive;
-        this.field_iqamah_asr_adjustment.visible = iqamahActive;
-        this.field_iqamah_maghrib_adjustment.visible = iqamahActive;
-        this.field_iqamah_isha_adjustment.visible = iqamahActive;
-
-        this.field_iqamah_toggle.connect('notify::active', () => {
-            iqamahActive = this.field_iqamah_toggle.active;
-            this.field_iqamah_fajr_adjustment.visible = iqamahActive;
-            this.field_iqamah_dhuhr_adjustment.visible = iqamahActive;
-            this.field_iqamah_asr_adjustment.visible = iqamahActive;
-            this.field_iqamah_maghrib_adjustment.visible = iqamahActive;
-            this.field_iqamah_isha_adjustment.visible = iqamahActive;
-        });
+        
+        this.iqamahGroup = new Adw.PreferencesGroup({ title: _('Iqamah') });
+        this.iqamahGroup.add(this.field_iqamah_toggle);
+        this.iqamahGroup.add(this.field_iqamah_fajr_adjustment);
+        this.iqamahGroup.add(this.field_iqamah_dhuhr_adjustment);
+        this.iqamahGroup.add(this.field_iqamah_asr_adjustment);
+        this.iqamahGroup.add(this.field_iqamah_maghrib_adjustment);
+        this.iqamahGroup.add(this.field_iqamah_isha_adjustment);
     }
 
     #bindSettings() {
@@ -248,6 +230,12 @@ class Settings {
             'value',
             Gio.SettingsBindFlags.DEFAULT
         );
+        this.field_auto_location_toggle.connect('notify::active', () => {
+            this.#updateLocationFields();
+        });
+        this.field_iqamah_toggle.connect('notify::active', () => {
+            this.#updateIqamahFields();
+        });
     }
 
     #calcMethodOptions() {
@@ -319,5 +307,20 @@ class Settings {
             list.append(option)
         }
         return list;
+    }
+
+    #updateLocationFields() {
+        let autoLocationActive = this.field_auto_location_toggle.active;
+        this.field_latitude.visible = !autoLocationActive;
+        this.field_longitude.visible = !autoLocationActive;
+    }
+
+    #updateIqamahFields() {
+        let iqamahActive = this.field_iqamah_toggle.active;
+        this.field_iqamah_fajr_adjustment.visible = iqamahActive;
+        this.field_iqamah_dhuhr_adjustment.visible = iqamahActive;
+        this.field_iqamah_asr_adjustment.visible = iqamahActive;
+        this.field_iqamah_maghrib_adjustment.visible = iqamahActive;
+        this.field_iqamah_isha_adjustment.visible = iqamahActive;
     }
 }
