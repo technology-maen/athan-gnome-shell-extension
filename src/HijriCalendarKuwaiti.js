@@ -5,7 +5,7 @@ function gmod(n, m) {
 }
 
 export function KuwaitiCalendar(adjust) {
-	var today = new Date();
+	let today = new Date();
 	if (adjust) {
 		let adjustmili = 1000 * 60 * 60 * 24 * adjust;
 		let todaymili = today.getTime() + adjustmili;
@@ -51,7 +51,7 @@ export function KuwaitiCalendar(adjust) {
 	}
 	year = cc - 4716;
 
-    let wd;
+	let wd;
 	if (adjust) {
 		wd = gmod(jd + 1 - adjust, 7) + 1;
 	} else {
@@ -74,7 +74,7 @@ export function KuwaitiCalendar(adjust) {
 	if (im == 13) im = 12;
 	let id = z - Math.floor(29.5001 * im - 29);
 
-	var myRes = new Array(8);
+	let myRes = new Array(8);
 
 	myRes[0] = day; //calculated day (CE)
 	myRes[1] = month - 1; //calculated month (CE)
@@ -89,11 +89,11 @@ export function KuwaitiCalendar(adjust) {
 }
 
 function writeIslamicDate(adjustment) {
-	var wdNames = new Array("Ahad", "Ithnin", "Thulatha", "Arbaa", "Khams", "Jumuah", "Sabt");
-	var iMonthNames = new Array("Muharram", "Safar", "Rabi'ul Awwal", "Rabi'ul Akhir",
+	let wdNames = new Array("Ahad", "Ithnin", "Thulatha", "Arbaa", "Khams", "Jumuah", "Sabt");
+	let iMonthNames = new Array("Muharram", "Safar", "Rabi'ul Awwal", "Rabi'ul Akhir",
 		"Jumadal Ula", "Jumadal Akhira", "Rajab", "Sha'ban",
 		"Ramadan", "Shawwal", "Dhul Qa'ada", "Dhul Hijja");
-	var iDate = KuwaitiCalendar(adjustment);
-var outputIslamicDate = wdNames[iDate[4]] + ", " + iDate[5] + " " + iMonthNames[iDate[6]] + " " + iDate[7] + " AH";
+	let iDate = KuwaitiCalendar(adjustment);
+	let outputIslamicDate = wdNames[iDate[4]] + ", " + iDate[5] + " " + iMonthNames[iDate[6]] + " " + iDate[7] + " AH";
 	return outputIslamicDate;
 }

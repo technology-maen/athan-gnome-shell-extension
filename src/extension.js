@@ -512,5 +512,6 @@ export default class AzanExtension extends Extension {
     disable() {
         azan.stop();
         azan.destroy();
+        azan = null;
     }
 }
