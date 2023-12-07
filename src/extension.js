@@ -41,6 +41,10 @@ const Azan = GObject.registerClass(
             this._opt_iqamah_asr = null;
             this._opt_iqamah_maghrib = null;
             this._opt_iqamah_isha = null;
+            this._opt_notification_for_azan = null;
+            this._opt_notification_before_azan = null;
+            this._opt_notification_before_iqamah = null;
+
 
             this._settings = this.extensionObject.getSettings('org.gnome.shell.extensions.azan');
             this._bindSettings();
@@ -236,6 +240,9 @@ const Azan = GObject.registerClass(
             this._opt_iqamah_asr = this._settings.get_int('iqamah-asr');
             this._opt_iqamah_maghrib = this._settings.get_int('iqamah-maghrib');
             this._opt_iqamah_isha = this._settings.get_int('iqamah-isha');
+            this._opt_notification_for_azan = this._settings.get_boolean('notify-for-azan');
+            this._opt_notification_before_azan = this._settings.get_int('notify-before-azan');
+            this._opt_notification_before_iqamah = this._settings.get_int('notify-before-iqamah');
         }
 
         _bindSettings() {
@@ -317,6 +324,18 @@ const Azan = GObject.registerClass(
             this._settings.connect('changed::' + 'iqamah-isha', (settings, key) => {
                 this._opt_iqamah_isha = settings.get_int(key);
                 
+                this._updateLabel();
+            });
+            this._settings.connect('changed::' + 'notify-for-azan', (settings, key) => {
+                this._opt_notification_for_azan = settings.get_boolean(key);
+                this._updateLabel();
+            });
+            this._settings.connect('changed::' + 'notify-before-azan', (settings, key) => {
+                this._opt_notification_before_azan = settings.get_int(key);
+                this._updateLabel();
+            });
+            this._settings.connect('changed::' + 'notify-before-iqamah', (settings, key) => {
+                this._opt_notification_before_iqamah = settings.get_int(key);
                 this._updateLabel();
             });
         }
@@ -451,12 +470,22 @@ const Azan = GObject.registerClass(
 
             this._dateMenuItem.label.text = outputIslamicDate;
 
-            if ((minDiffMinutes === 15) || (minDiffMinutes === 10) || (minDiffMinutes === 5)) {
-                Main.notify(_(minDiffMinutes + " minutes remaining until " + this._timeNames[nearestPrayerId]) + " prayer.", _("Prayer time : " + timesStr[nearestPrayerId]));
+            if (this._opt_notification_before_azan) {
+                if (this._opt_notification_before_azan * 5 == minDiffMinutes) {
+                    Main.notify(_(minDiffMinutes + " minutes remaining until " + this._timeNames[nearestPrayerId]) + " prayer.", _("Prayer time : " + timesStr[nearestPrayerId]));
+                }
+            }
+
+            if (this._opt_notification_before_iqamah && this._opt_iqamah) {
+                if (this._opt_notification_before_azan * -5 == minDiffMinutes) {
+                    Main.notify(_(minDiffMinutes + " minutes remaining until " + this._timeNames[nearestPrayerId]) + " iqamah.");
+                }
             }
 
             if (isTimeForPraying) {
-                Main.notify(_("It's time for the " + this._timeNames[nearestPrayerId]) + " prayer.", _("Prayer time : " + timesStr[nearestPrayerId]));
+                if (this._opt_notification_for_azan) {
+                    Main.notify(_("It's time for the " + this._timeNames[nearestPrayerId]) + " prayer.", _("Prayer time : " + timesStr[nearestPrayerId]));
+                }
                 this.indicatorText.set_text(_("It's time for " + this._timeNames[nearestPrayerId]));
             } else if (isAfterAzan && this._opt_iqamah) {
                 this.indicatorText.set_text(this._timeNames[nearestPrayerId] + ' +' + this._formatRemainingTimeFromMinutes(-1 * minDiffMinutes));

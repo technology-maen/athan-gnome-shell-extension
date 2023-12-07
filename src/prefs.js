@@ -13,6 +13,7 @@ export default class ClipboardIndicatorPreferences extends ExtensionPreferences 
         page.add(settingsUI.calculationGroup);
         page.add(settingsUI.displayGroup);
         page.add(settingsUI.iqamahGroup);
+        page.add(settingsUI.notificationsGroup);
         window.add(page);
     }
 }
@@ -41,6 +42,9 @@ class Settings {
         this.field_iqamah_toggle = new Adw.SwitchRow({
             title: _("Iqamah"),
             subtitle: _("Keep the current prayer time until the Iqamah")
+        });
+        this.field_azan_notification_toggle = new Adw.SwitchRow({
+            title: _("Notify me when it's time for pray")
         });
 
         this.field_latitude = new Adw.SpinRow({
@@ -126,6 +130,14 @@ class Settings {
             title: _("Which times?"),
             model: this.#whichTimesOptions()
         });
+        this.field_azan_notification_mode = new Adw.ComboRow({
+            title: _("Notification before azan"),
+            model: this.#notificationOptions()
+        });
+        this.field_iqamah_notification_mode = new Adw.ComboRow({
+            title: _("Notification before iqamah"),
+            model: this.#notificationOptions()
+        });
     }
 
     #createView() {
@@ -151,6 +163,12 @@ class Settings {
         this.iqamahGroup.add(this.field_iqamah_asr_adjustment);
         this.iqamahGroup.add(this.field_iqamah_maghrib_adjustment);
         this.iqamahGroup.add(this.field_iqamah_isha_adjustment);
+
+        this.notificationsGroup = new Adw.PreferencesGroup({ title: _('Notifications') });
+        this.notificationsGroup.add(this.field_azan_notification_toggle);
+        this.notificationsGroup.add(this.field_azan_notification_mode);
+        this.notificationsGroup.add(this.field_iqamah_notification_mode);
+
     }
 
     #bindSettings() {
@@ -169,6 +187,12 @@ class Settings {
             'active',
             Gio.SettingsBindFlags.DEFAULT
         );
+        this.schema.bind('notify-for-azan',
+            this.field_azan_notification_toggle,
+            'active',
+            Gio.SettingsBindFlags.DEFAULT
+        );
+
         this.schema.bind('latitude',
             this.field_latitude,
             'value',
@@ -182,26 +206,6 @@ class Settings {
         this.schema.bind('hijri-date-adjustment',
             this.field_hijri_date_adjustment,
             'value',
-            Gio.SettingsBindFlags.DEFAULT
-        );
-        this.schema.bind('calculation-method',
-            this.field_calc_method_mode,
-            'selected',
-            Gio.SettingsBindFlags.DEFAULT
-        );
-        this.schema.bind('madhab',
-            this.field_madhab_mode,
-            'selected',
-            Gio.SettingsBindFlags.DEFAULT
-        );
-        this.schema.bind('timezone',
-            this.field_timezone_mode,
-            'selected',
-            Gio.SettingsBindFlags.DEFAULT
-        );
-        this.schema.bind('concise-list',
-            this.field_which_times_mode,
-            'selected',
             Gio.SettingsBindFlags.DEFAULT
         );
 
@@ -230,6 +234,38 @@ class Settings {
             'value',
             Gio.SettingsBindFlags.DEFAULT
         );
+
+        this.schema.bind('calculation-method',
+            this.field_calc_method_mode,
+            'selected',
+            Gio.SettingsBindFlags.DEFAULT
+        );
+        this.schema.bind('madhab',
+            this.field_madhab_mode,
+            'selected',
+            Gio.SettingsBindFlags.DEFAULT
+        );
+        this.schema.bind('timezone',
+            this.field_timezone_mode,
+            'selected',
+            Gio.SettingsBindFlags.DEFAULT
+        );
+        this.schema.bind('concise-list',
+            this.field_which_times_mode,
+            'selected',
+            Gio.SettingsBindFlags.DEFAULT
+        );
+        this.schema.bind('notify-before-azan',
+            this.field_azan_notification_mode,
+            'selected',
+            Gio.SettingsBindFlags.DEFAULT
+        );
+        this.schema.bind('notify-before-iqamah',
+            this.field_iqamah_notification_mode,
+            'selected',
+            Gio.SettingsBindFlags.DEFAULT
+        );
+
         this.field_auto_location_toggle.connect('notify::active', () => {
             this.#updateLocationFields();
         });
@@ -309,10 +345,24 @@ class Settings {
         return list;
     }
 
+    #notificationOptions() {
+        let options = [
+            _("Off"),
+            _("5 min"),
+            _("10 min"),
+            _("15 min")
+        ];
+        let list = new Gtk.StringList();
+        for (let option of options) {
+            list.append(option)
+        }
+        return list;
+    }
+
     #updateLocationFields() {
         let autoLocationActive = this.field_auto_location_toggle.active;
-        this.field_latitude.visible = !autoLocationActive;
-        this.field_longitude.visible = !autoLocationActive;
+        this.field_latitude.sensitive = !autoLocationActive;
+        this.field_longitude.sensitive = !autoLocationActive;
     }
 
     #updateIqamahFields() {
@@ -322,5 +372,6 @@ class Settings {
         this.field_iqamah_asr_adjustment.visible = iqamahActive;
         this.field_iqamah_maghrib_adjustment.visible = iqamahActive;
         this.field_iqamah_isha_adjustment.visible = iqamahActive;
+        this.field_iqamah_notification_mode.sensitive = iqamahActive;
     }
 }
