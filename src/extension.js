@@ -477,8 +477,8 @@ const Azan = GObject.registerClass(
             }
 
             if (this._opt_notification_before_iqamah && this._opt_iqamah) {
-                if (this._opt_notification_before_azan * -5 == minDiffMinutes) {
-                    Main.notify(_(minDiffMinutes + " minutes remaining until " + this._timeNames[nearestPrayerId]) + " iqamah.");
+                if (iqamahOffest - this._opt_notification_before_iqamah * 5 == -1 * minDiffMinutes) {
+                    Main.notify(_(this._opt_notification_before_iqamah * 5 + " minutes remaining until " + this._timeNames[nearestPrayerId]) + " iqamah.");
                 }
             }
 
