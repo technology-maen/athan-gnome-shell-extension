@@ -44,7 +44,7 @@ const Azan = GObject.registerClass(
             this._opt_notification_for_azan = null;
             this._opt_notification_before_azan = null;
             this._opt_notification_before_iqamah = null;
-
+            this._currIqamahOffset = null;
 
             this._settings = this.extensionObject.getSettings('org.gnome.shell.extensions.azan');
             this._bindSettings();
@@ -61,15 +61,27 @@ const Azan = GObject.registerClass(
                 "Jumadal Ula", "Jumadal Akhira", "Rajab", "Sha'ban",
                 "Ramadhan", "Shawwal", "Dhul Qa'ada", "Dhul Hijja");
 
+
+            // If today is Friday, show Jummah instead of Dhuhr
+            let today = new Date();
+            let dayOfWeek = today.getDay();
             this._timeNames = {
                 fajr: 'Fajr',
                 sunrise: 'Sunrise',
-                dhuhr: 'Dhuhr',
+                dhuhr: dayOfWeek === 5 ? 'Jummah' : 'Dhuhr',
                 asr: 'Asr',
                 sunset: 'Sunset',
                 maghrib: 'Maghrib',
                 isha: 'Isha',
                 midnight: 'Midnight'
+            };
+
+            this._iqamahOffsets = {
+                'fajr': this._opt_iqamah_fajr,
+                'dhuhr': this._opt_iqamah_dhuhr,
+                'asr': this._opt_iqamah_asr,
+                'maghrib': this._opt_iqamah_maghrib,
+                'isha': this._opt_iqamah_isha
             };
 
             this._timeConciseLevels = {
@@ -351,137 +363,115 @@ const Azan = GObject.registerClass(
         }
 
         _updateLabelPeriodic() {
-            let currentSeconds = new Date().getSeconds();
+            const currentSeconds = new Date().getSeconds();
             this._updateLabel();
             if (this._periodicTimeoutId) {
                 GLib.source_remove(this._periodicTimeoutId);
             }
-            if (currentSeconds === 0) {
-                this._periodicTimeoutId = GLib.timeout_add_seconds(
-                    GLib.PRIORITY_DEFAULT,
-                    60,
-                    () => {
-                        this._updateLabel();
-                        return true;
-                    }
-                );
-            } else {
-                this._periodicTimeoutId = GLib.timeout_add_seconds(
-                    GLib.PRIORITY_DEFAULT,
-                    60 - currentSeconds,
-                    () => {
-                        this._updateLabelPeriodic();
-                        return true;
-                    }
-                );
-            }
+            const delaySeconds = currentSeconds === 0 ? 60 : 60 - currentSeconds;
+            this._periodicTimeoutId = GLib.timeout_add_seconds(
+                GLib.PRIORITY_DEFAULT,
+                delaySeconds,
+                () => {
+                    this._updateLabelPeriodic();
+                    return true;
+                }
+            );
         }
 
-        _updateLabel() {
-            let displayDate = GLib.DateTime.new_now_local();
-            let dateFormattedFull = displayDate.format(this._dateFormatFull);
 
-            let myLocation = [this._opt_latitude, this._opt_longitude];
-            let myTimezone = this._timezoneArr[this._opt_timezone];
+        _updateLabel() {
+            const displayDate = GLib.DateTime.new_now_local();
+            const dateFormattedFull = displayDate.format(this._dateFormatFull);
+
+            const myLocation = [this._opt_latitude, this._opt_longitude];
+            const myTimezone = this._timezoneArr[this._opt_timezone];
             this._prayTimes.setMethod(this._calcMethodsArr[this._opt_calculationMethod]);
             this._prayTimes.adjust({ asr: this._madhabArr[this._opt_madhab] });
 
-            let currentDate = new Date();
+            const currentDate = new Date();
+            const currentSeconds = this._calculateSecondsFromDate(currentDate);
 
-            let currentSeconds = this._calculateSecondsFromDate(currentDate);
-
-            let timesStr;
-
-            if (this._opt_timeformat12) {
-                timesStr = this._prayTimes.getTimes(currentDate, myLocation, myTimezone, 'auto', '12h');
-            } else {
-                timesStr = this._prayTimes.getTimes(currentDate, myLocation, myTimezone, 'auto', '24h');
-            }
-
-            let timesFloat = this._prayTimes.getTimes(currentDate, myLocation, myTimezone, 'auto', 'Float');
+            const timesStr = this._opt_timeformat12 ? this._prayTimes.getTimes(currentDate, myLocation, myTimezone, 'auto', '12h') : this._prayTimes.getTimes(currentDate, myLocation, myTimezone, 'auto', '24h');
+            const timesFloat = this._prayTimes.getTimes(currentDate, myLocation, myTimezone, 'auto', 'Float');
 
             let nearestPrayerId;
             let minDiffMinutes = Number.MAX_VALUE;
             let isTimeForPraying = false;
             let isAfterAzan = false;
-            let iqamahOffest = 35;
-            for (let prayerId in this._timeNames) {
 
-                let prayerName = this._timeNames[prayerId];
-                let prayerTime = timesStr[prayerId];
-
+            for (const prayerId in this._timeNames) {
+                const prayerTime = timesStr[prayerId];
                 this._prayItems[prayerId].label.text = prayerTime;
 
                 if (this._isPrayerTime(prayerId)) {
-
-                    let prayerSeconds = this._calculateSecondsFromHour(timesFloat[prayerId]);
-
-                    let ishaSeconds = this._calculateSecondsFromHour(timesFloat['isha']);
-                    let fajrSeconds = this._calculateSecondsFromHour(timesFloat['fajr']);
+                    const prayerSeconds = this._calculateSecondsFromHour(timesFloat[prayerId]);
+                    const ishaSeconds = this._calculateSecondsFromHour(timesFloat['isha']);
+                    const fajrSeconds = this._calculateSecondsFromHour(timesFloat['fajr']);
 
                     if (prayerId === 'fajr' && currentSeconds > ishaSeconds) {
                         prayerSeconds = fajrSeconds + (24 * 60 * 60);
                     }
 
-                    let diffSeconds = prayerSeconds - currentSeconds;
+                    const diffSeconds = prayerSeconds - currentSeconds;
 
                     if (diffSeconds <= 0 && diffSeconds > -60) {
                         isTimeForPraying = true;
                         nearestPrayerId = prayerId;
+                        this._setCurrIqamahOffset(nearestPrayerId);
                         break;
                     }
-                    if (this._opt_iqamah && diffSeconds <= 0 && diffSeconds >= -60 * iqamahOffest) {
-                        
-                        nearestPrayerId = prayerId;
-                        if (nearestPrayerId === 'fajr') iqamahOffest = this._opt_iqamah_fajr;
-                        else if (nearestPrayerId === 'dhuhr') iqamahOffest = this._opt_iqamah_dhuhr;
-                        else if (nearestPrayerId === 'asr') iqamahOffest = this._opt_iqamah_asr;
-                        else if (nearestPrayerId === 'maghrib') iqamahOffest = this._opt_iqamah_maghrib;
-                        else if (nearestPrayerId === 'isha') iqamahOffest = this._opt_iqamah_isha;
 
-                        if (diffSeconds >= -60 * iqamahOffest) {
+                    const isInIqamahOffsetRange = diffSeconds <= 0 && diffSeconds >= -60 * 35;
+                    if (this._opt_iqamah && isInIqamahOffsetRange) {
+                        nearestPrayerId = prayerId;
+                        this._setCurrIqamahOffset(nearestPrayerId);
+                        if (diffSeconds >= -60 * this._currIqamahOffset) {
                             isAfterAzan = true;
-                            let diffMinutes = ~~(diffSeconds / 60);
+                            nearestPrayerId = prayerId;
+                            this._setCurrIqamahOffset(nearestPrayerId);
+                            const diffMinutes = ~~(diffSeconds / 60);
                             if (diffMinutes <= minDiffMinutes) {
                                 minDiffMinutes = diffMinutes;
-                                nearestPrayerId = prayerId;
                             }
-
                             break;
                         }
+                        nearestPrayerId = this._getNextPrayer(nearestPrayerId);
+                        isAfterAzan = false;
                     }
 
                     if (diffSeconds > 0) {
-                        let diffMinutes = ~~(diffSeconds / 60);
-
+                        const diffMinutes = ~~(diffSeconds / 60);
                         if (diffMinutes <= minDiffMinutes) {
                             minDiffMinutes = diffMinutes;
                             nearestPrayerId = prayerId;
                         }
                     }
-
                 }
-            };
+            }
 
+            this._updateIslamicDate();
+            this._handlePrayerNotifications(minDiffMinutes, nearestPrayerId, timesStr);
+            this._updateIndicatorText(isTimeForPraying, isAfterAzan, minDiffMinutes, nearestPrayerId);
+        }
 
-            let hijriDate = HijriCalendarKuwaiti.KuwaitiCalendar(this._opt_hijriDateAdjustment);
-
-            let outputIslamicDate = this._formatHijriDate(hijriDate);
-
+        _updateIslamicDate() {
+            const hijriDate = HijriCalendarKuwaiti.KuwaitiCalendar(this._opt_hijriDateAdjustment);
+            const outputIslamicDate = this._formatHijriDate(hijriDate);
             this._dateMenuItem.label.text = outputIslamicDate;
+        }
 
-            if (this._opt_notification_before_azan) {
-                if (this._opt_notification_before_azan * 5 == minDiffMinutes) {
-                    Main.notify(_(minDiffMinutes + " minutes remaining until " + this._timeNames[nearestPrayerId]) + " prayer.", _("Prayer time : " + timesStr[nearestPrayerId]));
-                }
+        _handlePrayerNotifications(minDiffMinutes, nearestPrayerId, timesStr) {
+            if (this._opt_notification_before_azan && this._opt_notification_before_azan * 5 == minDiffMinutes) {
+                Main.notify(_(minDiffMinutes + " minutes remaining until " + this._timeNames[nearestPrayerId]) + " prayer.", _("Prayer time : " + timesStr[nearestPrayerId]));
             }
 
-            if (this._opt_notification_before_iqamah && this._opt_iqamah) {
-                if (iqamahOffest - this._opt_notification_before_iqamah * 5 == -1 * minDiffMinutes) {
-                    Main.notify(_(this._opt_notification_before_iqamah * 5 + " minutes remaining until " + this._timeNames[nearestPrayerId]) + " iqamah.");
-                }
+            if (this._opt_notification_before_iqamah && this._opt_iqamah && this._currIqamahOffset - this._opt_notification_before_iqamah * 5 == -1 * minDiffMinutes) {
+                Main.notify(_(this._opt_notification_before_iqamah * 5 + " minutes remaining until " + this._timeNames[nearestPrayerId]) + " iqamah.");
             }
+        }
 
+        _updateIndicatorText(isTimeForPraying, isAfterAzan, minDiffMinutes, nearestPrayerId) {
             if (isTimeForPraying) {
                 if (this._opt_notification_for_azan) {
                     Main.notify(_("It's time for the " + this._timeNames[nearestPrayerId]) + " prayer.", _("Prayer time : " + timesStr[nearestPrayerId]));
@@ -492,6 +482,18 @@ const Azan = GObject.registerClass(
             } else {
                 this.indicatorText.set_text(this._timeNames[nearestPrayerId] + ' -' + this._formatRemainingTimeFromMinutes(minDiffMinutes));
             }
+        }
+
+
+        _getNextPrayer(prayerId) {
+            const prayers = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
+            const currentIndex = prayers.indexOf(prayerId);
+            const nextIndex = (currentIndex + 1) % prayers.length;
+            return prayers[nextIndex];
+        }
+
+        _setCurrIqamahOffset(nearestPrayerId) {
+            this._currIqamahOffset = this._iqamahOffsets[nearestPrayerId];
         }
 
         _calculateSecondsFromDate(date) {
