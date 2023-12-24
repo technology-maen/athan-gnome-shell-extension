@@ -405,7 +405,7 @@ const Azan = GObject.registerClass(
                 this._prayItems[prayerId].label.text = prayerTime;
 
                 if (this._isPrayerTime(prayerId)) {
-                    const prayerSeconds = this._calculateSecondsFromHour(timesFloat[prayerId]);
+                    let prayerSeconds = this._calculateSecondsFromHour(timesFloat[prayerId]);
                     const ishaSeconds = this._calculateSecondsFromHour(timesFloat['isha']);
                     const fajrSeconds = this._calculateSecondsFromHour(timesFloat['fajr']);
 
