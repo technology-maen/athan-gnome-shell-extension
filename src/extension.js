@@ -44,7 +44,7 @@ const Azan = GObject.registerClass(
             this._opt_notification_for_azan = null;
             this._opt_notification_before_azan = null;
             this._opt_notification_before_iqamah = null;
-            this._currIqamahOffset = null;
+            this._currIqamahOffset = 0;
 
             this._settings = this.extensionObject.getSettings('org.gnome.shell.extensions.azan');
             this._bindSettings();
@@ -451,7 +451,7 @@ const Azan = GObject.registerClass(
             }
 
             this._updateIslamicDate();
-            this._handlePrayerNotifications(minDiffMinutes, nearestPrayerId, timesStr);
+            this._handlePrayerNotifications(isAfterAzan, minDiffMinutes, nearestPrayerId, timesStr);
             this._updateIndicatorText(isTimeForPraying, isAfterAzan, minDiffMinutes, nearestPrayerId);
         }
 
@@ -461,12 +461,12 @@ const Azan = GObject.registerClass(
             this._dateMenuItem.label.text = outputIslamicDate;
         }
 
-        _handlePrayerNotifications(minDiffMinutes, nearestPrayerId, timesStr) {
+        _handlePrayerNotifications(isAfterAzan, minDiffMinutes, nearestPrayerId, timesStr) {
             if (this._opt_notification_before_azan && this._opt_notification_before_azan * 5 == minDiffMinutes) {
                 Main.notify(_(minDiffMinutes + " minutes remaining until " + this._timeNames[nearestPrayerId]) + " prayer.", _("Prayer time : " + timesStr[nearestPrayerId]));
             }
 
-            if (this._opt_notification_before_iqamah && this._opt_iqamah && this._currIqamahOffset - this._opt_notification_before_iqamah * 5 == -1 * minDiffMinutes) {
+            if (isAfterAzan && this._opt_notification_before_iqamah && this._opt_iqamah && (this._currIqamahOffset - this._opt_notification_before_iqamah * 5 == -1 * minDiffMinutes)) {
                 Main.notify(_(this._opt_notification_before_iqamah * 5 + " minutes remaining until " + this._timeNames[nearestPrayerId]) + " iqamah.");
             }
         }
