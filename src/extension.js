@@ -557,6 +557,10 @@ const Azan = GObject.registerClass(
 let azan;
 
 export default class AzanExtension extends Extension {
+    constructor(metadata) {
+        super(metadata);
+    }
+
     enable() {
         azan = new Azan();
         Main.panel.addToStatusArea('azan', azan, 1, 'center');
