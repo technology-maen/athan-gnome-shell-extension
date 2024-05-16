@@ -121,9 +121,9 @@ const Azan = GObject.registerClass(
                 let bin = new St.Bin({ x_expand: true, x_align: Clutter.ActorAlign.END });
 
                 let prayLabel = new St.Label();
-                bin.add_actor(prayLabel);
+                bin.add_child(prayLabel);
 
-                prayMenuItem.actor.add_actor(bin);
+                prayMenuItem.actor.add_child(bin);
 
                 this.menu.addMenuItem(prayMenuItem);
 
@@ -132,21 +132,21 @@ const Azan = GObject.registerClass(
 
             this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
-            //	making mordernize
+            // Modernize menu preferences
             this.prefs_s = new PopupMenu.PopupBaseMenuItem({ reactive: false, can_focus: false });
             let l = new St.Label({ text: ' ' });
             l.x_expand = true;
-            this.prefs_s.actor.add(l);
+            this.prefs_s.actor.add_child(l);
             this.prefs_b = new St.Button({ child: new St.Icon({ icon_name: 'preferences-system-symbolic', icon_size: 30 }), style_class: 'prefs_s_action' });
 
             this.prefs_b.connect('clicked', () => {
                 this.extensionObject.openPreferences()
             });
 
-            this.prefs_s.actor.add(this.prefs_b);
+            this.prefs_s.actor.add_child(this.prefs_b);
             l = new St.Label({ text: ' ' });
             l.x_expand = true;
-            this.prefs_s.actor.add(l);
+            this.prefs_s.actor.add_child(l);
 
             this.menu.addMenuItem(this.prefs_s);
 
