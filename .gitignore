@@ -1,4 +1,2 @@
-gschemas.compiled
-build/
-src/prefs-old.js
-*.zip
+/build/
+
