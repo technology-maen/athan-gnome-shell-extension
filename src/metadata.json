@@ -3,9 +3,9 @@
   "name": "xAzanTimes",
   "settings-schema": "org.gnome.shell.extensions.azan",
   "shell-version": [
-    "45"
+    "46"
   ],
-  "url": "https://github.com/a7medkhalaf/azan-gnome-shell-extension",
-  "uuid": "azan@a7medkhalaf",
+  "url": "https://github.com/goodm4ven/azan-gnome-shell-extension",
+  "uuid": "azan@goodm4ven",
   "version": 7
 }
