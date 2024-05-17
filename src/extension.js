@@ -16,10 +16,8 @@ import * as HijriCalendarKuwaiti from './HijriCalendarKuwaiti.js';
 const Azan = GObject.registerClass(
     class Azan extends PanelMenu.Button {
 
-        _init() {
+        _init(extension) {
             super._init(0.5, _('Azan'));
-
-            this.extensionObject = Extension.lookupByURL(import.meta.url);
 
             this.indicatorText = new St.Label({ text: _("Loading..."), y_align: Clutter.ActorAlign.CENTER });
             this.add_child(this.indicatorText);
@@ -46,7 +44,7 @@ const Azan = GObject.registerClass(
             this._opt_notification_before_iqamah = null;
             this._currIqamahOffset = 0;
 
-            this._settings = this.extensionObject.getSettings('org.gnome.shell.extensions.azan');
+            this._settings = extension.getSettings('org.gnome.shell.extensions.athan');
             this._bindSettings();
             this._loadSettings();
 
@@ -140,7 +138,7 @@ const Azan = GObject.registerClass(
             this.prefs_b = new St.Button({ child: new St.Icon({ icon_name: 'preferences-system-symbolic', icon_size: 30 }), style_class: 'prefs_s_action' });
 
             this.prefs_b.connect('clicked', () => {
-                this.extensionObject.openPreferences()
+                extension.openPreferences()
             });
 
             this.prefs_s.actor.add_child(this.prefs_b);
@@ -491,7 +489,7 @@ const Azan = GObject.registerClass(
         }
 
         _updatePanelPosition() {
-            delete Main.panel.statusArea['azan'];
+            delete Main.panel.statusArea['athan'];
             let position;
             switch (this._opt_panel_position) {
                 case 1:
@@ -503,7 +501,7 @@ const Azan = GObject.registerClass(
                 default:
                     position = 'center';
             }
-            Main.panel.addToStatusArea('azan', this, 1, position);
+            Main.panel.addToStatusArea('athan', this, 1, position);
         }
 
 
@@ -552,7 +550,8 @@ const Azan = GObject.registerClass(
                 GLib.source_remove(this._periodicTimeoutId);
             }
         }
-    });
+    }
+);
 
 let azan;
 
@@ -562,8 +561,8 @@ export default class AzanExtension extends Extension {
     }
 
     enable() {
-        azan = new Azan();
-        Main.panel.addToStatusArea('azan', azan, 1, 'center');
+        azan = new Azan(this);
+        Main.panel.addToStatusArea('athan', azan, 1, 'center');
     }
 
     disable() {

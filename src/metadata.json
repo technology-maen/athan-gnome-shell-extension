@@ -1,14 +1,11 @@
 {
-  "description": "Azan is an Islamic prayer times extension for Gnome Shell.\nIt's a fork of the extension by faissaloo.\n\nFeatures\n- List compulsory prayer times\n- Optionally display Imsak, Sunrise, Sunset and Midnight\n- Show remaining time for the upcoming prayer.\n- Show current date in Hijri calendar.\n- Display a notification when it's time for prayer.\n- Automatic Geoclue2 location detection\n- Show times in 24 hour and 12 hour formats\n- Hijri date adjusment\n- Iqamah option",
-  "name": "xAzanTimes",
-  "settings-schema": "org.gnome.shell.extensions.azan",
-  "session-modes": [
-    "user"
-  ],
+  "uuid": "athan@goodm4ven",
+  "name": "AthanTimes",
+  "url": "https://github.com/goodm4ven/athan-gnome-shell-extension",
+  "description": "Athan is an Islamic prayer times extension for Gnome Shell.\nIt's just of the original extension by [fahrinh].\n\nFeatures\n- List compulsory prayer times\n- Optionally display Imsak, Sunrise, Sunset and Midnight\n- Show remaining time for the upcoming prayer.\n- Show current date in Hijri calendar.\n- Display a notification when it's time for prayer.\n- Automatic Geoclue2 location detection\n- Show times in 24 hour and 12 hour formats\n- Hijri date adjusment\n- Iqamah option",
+  "settings-schema": "org.gnome.shell.extensions.athan",
   "shell-version": [
     "46"
   ],
-  "url": "https://github.com/goodm4ven/azan-gnome-shell-extension",
-  "uuid": "azan@goodm4ven",
   "version": 8
 }
