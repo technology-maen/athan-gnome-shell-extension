@@ -1,6 +1,19 @@
-# JUST A FORK
+<div align="center">
+    بسم الله الرحمن الرحيم
+</div>
 
-Adjusted for gnome shell version 46
+
+# athan-gnome-shell-extension
+
+It's a **fork of the originl**; adjusted for gnome shell version 46
+
+
+<div align="center">
+   <br>والحمد لله رب العالمين
+</div>
+
+
+# azan-gnome-shell-extension
 
 ### Description
 
@@ -44,3 +57,4 @@ Licensed under the GNU General Public License, version 3
 
 - [PrayTimes.js](http://praytimes.org/manual/)
 - [HijriCalendar-Kuwaiti.js](http://www.al-habib.info/islamic-calendar/hijricalendar-kuwaiti.js)
+
