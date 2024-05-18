@@ -489,7 +489,6 @@ const Azan = GObject.registerClass(
         }
 
         _updatePanelPosition() {
-            delete Main.panel.statusArea['athan'];
             let position;
             switch (this._opt_panel_position) {
                 case 1:
@@ -501,7 +500,7 @@ const Azan = GObject.registerClass(
                 default:
                     position = 'center';
             }
-            Main.panel.addToStatusArea('athan', this, 1, position);
+            Main.panel.addToStatusArea('athan@goodm4ven', this, 1, position);
         }
 
 
@@ -562,7 +561,6 @@ export default class AzanExtension extends Extension {
 
     enable() {
         azan = new Azan(this);
-        Main.panel.addToStatusArea('athan', azan, 1, 'center');
     }
 
     disable() {
