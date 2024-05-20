@@ -19,6 +19,8 @@ const Azan = GObject.registerClass(
         _init(extension) {
             super._init(0.5, _('Azan'));
 
+            Main.panel.addToStatusArea('athan@goodm4ven', this, 1, 'center');
+            
             this.indicatorText = new St.Label({ text: _("Loading..."), y_align: Clutter.ActorAlign.CENTER });
             this.add_child(this.indicatorText);
 
@@ -456,7 +458,6 @@ const Azan = GObject.registerClass(
             this._updateIslamicDate();
             this._handlePrayerNotifications(isAfterAzan, minDiffMinutes, nearestPrayerId, timesStr);
             this._updateIndicatorText(isTimeForPraying, isAfterAzan, minDiffMinutes, nearestPrayerId);
-            this._updatePanelPosition();
         }
 
         _updateIslamicDate() {
@@ -488,20 +489,19 @@ const Azan = GObject.registerClass(
             }
         }
 
-        _updatePanelPosition() {
-            let position;
-            switch (this._opt_panel_position) {
-                case 1:
-                    position = 'left';
-                    break;
-                case 2:
-                    position = 'right';
-                    break;
-                default:
-                    position = 'center';
-            }
-            Main.panel.addToStatusArea('athan@goodm4ven', this, 1, position);
-        }
+        // _updatePanelPosition() {
+        //     let position;
+        //     switch (this._opt_panel_position) {
+        //         case 1:
+        //             position = 'left';
+        //             break;
+        //         case 2:
+        //             position = 'right';
+        //             break;
+        //         default:
+        //             position = 'center';
+        //     }
+        // }
 
 
         _getNextPrayer(prayerId) {
