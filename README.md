@@ -5,7 +5,11 @@
 
 # athan-gnome-shell-extension
 
-It's a **fork of the originl**; adjusted for gnome shell version 46
+It's a **fork of the originl**; adjusted for gnome shell version 46.
+
+Important Changes:
+
+- The position customization has been **dropped** in favor of fixing the time updating loop. [Help us](https://github.com/GoodM4ven/athan-gnome-shell-extension/issues/1) if you can.
 
 
 <div align="center">
