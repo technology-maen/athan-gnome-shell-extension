@@ -1,0 +1,24 @@
+{
+  "name": "athan-gnome-shell-extension",
+  "version": "1.0.0",
+  "description": "<div align=\"center\">     بسم الله الرحمن الرحيم </div>",
+  "main": "src/extension.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/goodm4ven/athan-gnome-shell-extension.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/goodm4ven/athan-gnome-shell-extension/issues"
+  },
+  "homepage": "https://github.com/goodm4ven/athan-gnome-shell-extension#readme",
+  "devDependencies": {
+    "@eslint/js": "^9.3.0",
+    "eslint": "^9.3.0",
+    "globals": "^15.3.0"
+  }
+}
