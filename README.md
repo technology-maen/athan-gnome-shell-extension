@@ -5,11 +5,17 @@
 
 # athan-gnome-shell-extension
 
-It's a **fork of the originl**; adjusted for gnome shell version 46.
+It's just a **fork of the originl**; adjusted for gnome shell version 46.
 
 ### Important Changes:
 
 - The position customization has been **dropped** in favor of fixing the time updating loop. [Help](https://github.com/GoodM4ven/athan-gnome-shell-extension/issues/1) is appreciated.
+
+## Prayer Traces:
+
+- "بيْنَ الرَّجُلِ وبيْنَ **الشِّرْكِ وَالْكُفْرِ تَرْكُ الصَّلَاةِ**"
+- "استَقيموا ولَن تُحصوا ، **واعلَموا أنَّ خيرَ أعمالِكُمُ الصَّلاةَ** ، ولا يحافظُ علَى الوضوءِ إلَّا مؤمنٌ"
+- "**أولُ ما يحاسبُ بهِ العبدُ يومَ القيامةِ الصَّلاةُ** ، فإنْ صَلَحَتْ ، صَلَحَ سائِرُ عَمَلِه ، وإنْ فَسَدَتْ فَسَدَ سائِرُ عَمَلِه"
 
 
 <div align="center">
