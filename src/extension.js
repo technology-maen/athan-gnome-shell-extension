@@ -400,6 +400,11 @@ const Azan = GObject.registerClass(
             const timesStr = this._getPrayerTimes(currentDate, 'String');
             const timesFloat = this._getPrayerTimes(currentDate, 'Float');
 
+            // Update prayer time labels
+            for (const prayerId in this._timeNames) {
+                this._prayItems[prayerId].label.text = timesStr[prayerId];
+            }
+
             const { nearestPrayerId, minDiffMinutes, isTimeForPraying, isAfterAzan } = this._findNearestPrayer(
                 timesFloat,
                 currentSeconds
