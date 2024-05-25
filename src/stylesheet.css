@@ -1,8 +1,12 @@
-.azan-panel {
+.athan-panel {
   font-family: Lotus, Arial, sans-serif;
   font-size: 14px;
   font-weight: bold;
 	direction: rtl;
+}
+
+.athan-label {
+  color: white;
 }
 
 .prefs_s_action:hover {

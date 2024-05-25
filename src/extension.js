@@ -74,13 +74,13 @@ const Azan = GObject.registerClass(
             let dayOfWeek = today.getDay();
             this._timeNames = {
                 fajr: 'Fajr',
-                sunrise: 'Sunrise',
+                // sunrise: 'Sunrise',
                 dhuhr: dayOfWeek === 5 ? 'Jummah' : 'Dhuhr',
                 asr: 'Asr',
-                sunset: 'Sunset',
+                // sunset: 'Sunset',
                 maghrib: 'Maghrib',
                 isha: 'Isha',
-                midnight: 'Midnight',
+                // midnight: 'Midnight',
             };
 
             this._iqamahOffsets = {
@@ -93,13 +93,13 @@ const Azan = GObject.registerClass(
 
             this._timeConciseLevels = {
                 fajr: 1,
-                sunrise: 0,
+                // sunrise: 0,
                 dhuhr: 1,
                 asr: 1,
-                sunset: 0,
+                // sunset: 0,
                 maghrib: 1,
                 isha: 1,
-                midnight: 0,
+                // midnight: 0,
             };
 
             this._calcMethodsArr = ['MUI', 'MWL', 'ISNA', 'Egypt', 'Makkah', 'Karachi', 'Tehran'];
@@ -110,7 +110,7 @@ const Azan = GObject.registerClass(
             this._prayItems = {};
 
             this._dateMenuItem = new PopupMenu.PopupMenuItem(_('TODO'), {
-                style_class: 'azan-panel',
+                style_class: 'athan-panel',
                 reactive: false,
                 hover: false,
                 activate: false,
@@ -131,7 +131,7 @@ const Azan = GObject.registerClass(
 
                 let bin = new St.Bin({ x_expand: true, x_align: Clutter.ActorAlign.END });
 
-                let prayLabel = new St.Label();
+                let prayLabel = new St.Label({ style_class: 'athan-label' });
                 bin.add_child(prayLabel);
 
                 prayMenuItem.actor.add_child(bin);
