@@ -8,12 +8,6 @@
         <description>Calculation method</description>
     </key>
 
-    <key type="i" name="madhab">
-        <default>0</default>
-        <summary>Madhab</summary>
-        <description>Madhab for calculating of Asr time</description>
-    </key>
-
     <key type="b" name="auto-location">
         <default>true</default>
         <summary>Automatic location</summary>
@@ -57,33 +51,8 @@
     </key>
 
     <key type="i" name="concise-list">
-      <default>1</default>
-      <summary>Which times to show</summary>
-    </key>
-
-    <key type="b" name="iqamah">
-        <default>true</default>
-        <description>Display the current prayer time until the Iqamah</description>
-    </key>
-
-    <key type="i" name="iqamah-fajr">
-      <default>35</default>
-    </key>
-
-    <key type="i" name="iqamah-dhuhr">
-      <default>20</default>
-    </key>
-
-    <key type="i" name="iqamah-asr">
-      <default>20</default>
-    </key>
-
-    <key type="i" name="iqamah-maghrib">
-      <default>15</default>
-    </key>
-
-    <key type="i" name="iqamah-isha">
-      <default>20</default>
+      <default>0</default>
+      <summary>Show times</summary>
     </key>
 
     <key type="b" name="notify-for-azan">
@@ -92,13 +61,9 @@
     </key>
 
     <key type="i" name="notify-before-azan">
-        <default>0</default> <!-- OFF -->
+        <default>0</default>
         <description>Notify me before azan</description>
     </key>
 
-    <key type="i" name="notify-before-iqamah">
-        <default>0</default> <!-- OFF -->
-        <description>Notify me before Iqamah</description>
-    </key>
   </schema>
 </schemalist>
