@@ -5,5 +5,5 @@
     "description": "A modified fork of the original extension by [fahrinh].",
     "settings-schema": "org.gnome.shell.extensions.athan",
     "shell-version": ["47"],
-    "version": 9
+    "version": 10
 }
