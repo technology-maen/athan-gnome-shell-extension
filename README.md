@@ -10,6 +10,8 @@ A GNOME Shell extension for prayer preparation, athan times notification, and Hi
 
 This is a modified fork off of the original by [fahrinh](https://github.com/fahrinh/azan-gnome-shell-extension), if it wasn't actually someone else, and lots of other people in between too! May Allah accept from us all, aameen.
 
+<br/>
+
 <img src="./.github/images/gnome-shell-extension-screenshot.png" width="440" />
 
 ### Why do we pray?
