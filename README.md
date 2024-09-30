@@ -10,6 +10,8 @@ A GNOME Shell extension for prayer preparation, athan times notification, and Hi
 
 This is a modified fork off of the original by [fahrinh](https://github.com/fahrinh/azan-gnome-shell-extension), if it wasn't actually someone else, and lots of other people in between too! May Allah accept from us all, aameen.
 
+<img src="./.github/images/gnome-shell-extension-screenshot.png" width="440" />
+
 ### Why do we pray?
 
 </div>
@@ -38,9 +40,10 @@ Spinned VMs to test for both GNOME versions. [GNOME Boxes](https://apps.gnome.or
 
 ### Important Changes:
 
-- Dropped the iqama reminder and the "athan since" indicator
-- Ensured accessible colors for the design
 - Minimized and standradized the available settings
+- Dropped the iqama reminder and the "athan since" indicator
+- Arabic naming consistency
+- Ensured accessible colors for the design
 - Fixed the positioning issue from that was in GNOME 46 version
 
 ### Todos
