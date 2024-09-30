@@ -67,6 +67,7 @@ This package is open-sourced software licensed under the [MIT license](LICENSE.m
 
 - [ChatGPT](https://chat.openai.com)
 - [DateHijri](https://datehijri.com/)
+- [JustPerfection](https://extensions.gnome.org/accounts/profile/JustPerfection)
 - [GNOME](https://gnome.org/)
 - [Linux](https://kernel.org/)
 - All the other contributors for the tree forks!
