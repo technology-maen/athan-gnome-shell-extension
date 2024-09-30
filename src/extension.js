@@ -731,6 +731,7 @@ export default class AzanExtension extends Extension {
             );
             this._settingsChangedIds = [];
         }
+        this._settings = null;
         if (azan) {
             azan.stop();
             azan = null;
