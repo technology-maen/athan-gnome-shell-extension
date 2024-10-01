@@ -5,8 +5,12 @@ export function getMethods() {
             params: { fajr: 18, isha: 17 },
         },
         Makkah: {
-            name: 'Umm Al-Qura University',
+            name: 'Umm Al-Qura University, Makkah',
             params: { fajr: 18.5, isha: '90 min' },
+        },
+        Karachi: {
+            name: 'University of Islamic Sciences, Karachi',
+            params: { fajr: 18, isha: 18 },
         },
     };
 }
