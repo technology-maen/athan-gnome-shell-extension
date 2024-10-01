@@ -105,10 +105,11 @@ const Azan = GObject.registerClass(
                 midnight: 1,
             };
 
-            this._calcMethodsArr = ['MWL', 'Makkah'];
+            this._calcMethodsArr = ['MWL', 'Makkah', 'Karachi'];
             this._calcMethodNames = [
                 'Muslim World League',
-                'Umm Al-Qura University',
+                'Umm Al-Qura University, Makkah',
+                'University of Islamic Sciences, Karachi',
             ];
             this._timezoneArr = Array.from({ length: 27 }, (_, index) =>
                 (index - 12).toString()
