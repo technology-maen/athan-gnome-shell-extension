@@ -105,8 +105,11 @@ const Azan = GObject.registerClass(
                 midnight: 1,
             };
 
-            this._calcMethodsArr = ['MWL', 'Makkah', 'Karachi'];
+            this._calcMethodsArr = ['ISNA', 'Egypt', 'Tehran', 'MWL', 'Makkah', 'Karachi',];
             this._calcMethodNames = [
+                'Islamic Society of North America, US',
+                'Egyptian General Authority of survey, Egypt',
+                'University of Tehran, Iran',
                 'Muslim World League',
                 'Umm Al-Qura University, Makkah',
                 'University of Islamic Sciences, Karachi',
