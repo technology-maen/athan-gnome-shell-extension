@@ -1,15 +1,16 @@
 export function getMethods() {
     return {
         ISNA: {
-			name: 'Islamic Society of North America (ISNA)',
-			params: { fajr: 15, isha: 15 } },
-		Egypt: {
-			name: 'Egyptian General Authority of Survey',
-			params: { fajr: 19.5, isha: 17.5 } 
+	     name: 'Islamic Society of North America (ISNA)',
+	     params: { fajr: 15, isha: 15 } 
+	},
+	Egypt: {
+	      name: 'Egyptian General Authority of Survey',
+	      params: { fajr: 19.5, isha: 17.5 } 
         },
-		Tehran: {
-			name: 'Institute of Geophysics, University of Tehran',
-			params: { fajr: 17.7, isha: 14, maghrib: 4.5, midnight: 'Jafari' } 
+	Tehran: {
+	      name: 'Institute of Geophysics, University of Tehran',
+	      params: { fajr: 17.7, isha: 14, maghrib: 4.5, midnight: 'Jafari' } 
             },  // isha is not explicitly specified in this method
         MWL: {
             name: 'Muslim World League',
