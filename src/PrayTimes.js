@@ -8,6 +8,10 @@ export function getMethods() {
             name: 'Umm Al-Qura University, Makkah',
             params: { fajr: 18.5, isha: '90 min' },
         },
+        Egypt: {
+	    name: 'Egyptian General Authority of Survey',
+	    params: { fajr: 19.5, isha: 17.5 },
+        },
         Karachi: {
             name: 'University of Islamic Sciences, Karachi',
             params: { fajr: 18, isha: 18 },
