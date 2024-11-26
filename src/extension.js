@@ -105,7 +105,7 @@ const Azan = GObject.registerClass(
                 midnight: 1,
             };
 
-            this._calcMethodsArr = ['ISNA', 'Egypt', 'Tehran', 'MWL', 'Makkah', 'Karachi',];
+            this._calcMethodsArr = ['MWL', 'Makkah', 'Egypt', 'Karachi'];
             this._calcMethodNames = [
                 'Islamic Society of North America, US',
                 'Egyptian General Authority of survey, Egypt',
